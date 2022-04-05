@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request
+from data import db_session
 
 app = Flask('MyApp')
+
+
+db_session.global_init("db/school_db.db")
+
+
 
 
 @app.route('/')
