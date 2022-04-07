@@ -5,37 +5,34 @@
 {% block content %}
 </br></br></br>
 <h1 align="center">Дневник</h1>
-{% set a = 0 %}
-{% set days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'] %}
-{% for day in days %}
+{% for day in days.keys() %}
 <table align="center">
-    <tr> <td></td><td align="center"> <h5>{{days_of_week[a]}}</h5> </td></tr>
+    <tr> <td></td><td align="center"> <h5>{{day}}</h5> </td></tr>
     <tr>
         <td bgcolor="#d7d7d7">08:30</td>
-        <td align="center" width="150">{{ day[0][0] }}</td>
-        <td align="center" width="250">{{ day[0][1] }}</td>
+        <td align="center" width="150">{{ days[day][0][0] }}</td>
+        <td align="center" width="250">{{ days[day][0][1] }}</td>
     </tr>
     <tr>
         <td bgcolor="#d7d7d7">09:25</td>
-        <td align="center" width="150">{{ day[1][0] }}</td>
-        <td align="center" width="250">{{ day[1][1] }}</td>
+        <td align="center" width="150">{{ days[day][1][0] }}</td>
+        <td align="center" width="250">{{ days[day][1][1] }}</td>
     </tr>
     <tr>
         <td bgcolor="#d7d7d7">10:30</td>
-        <td align="center" width="150">{{ day[2][0] }}</td>
-        <td align="center" width="250">{{ day[2][1] }}</td>
+        <td align="center" width="150">{{ days[day][2][0] }}</td>
+        <td align="center" width="250">{{ days[day][2][1] }}</td>
     </tr>
     <tr>
         <td bgcolor="#d7d7d7">11:25</td>
-        <td align="center" width="150">{{ day[3][0] }}</td>
-        <td align="center" width="250">{{ day[3][1] }}</td>
+        <td align="center" width="150">{{ days[day][3][0] }}</td>
+        <td align="center" width="250">{{ days[day][3][1] }}</td>
     </tr>
     <tr>
         <td bgcolor="#d7d7d7">12:30</td>
-        <td align="center" width="150">{{ day[4][0] }}</td>
-        <td align="center" width="250" >{{ day[4][1] }}</td>
+        <td align="center" width="150">{{ days[day][4][0] }}</td>
+        <td align="center" width="250" >{{ days[day][4][1] }}</td>
     </tr>
-    {% set a = a + 1 %}
     </br>
 </table>
 {% endfor %}
