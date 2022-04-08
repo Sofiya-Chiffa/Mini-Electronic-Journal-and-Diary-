@@ -1,0 +1,51 @@
+{% extends "student_base.html" %}
+
+{% block title %}Расписание{% endblock %}
+
+{% block content %}
+</br></br></br>
+<table align="center">
+    <tr>
+        <td align="center">Понедельник</td>
+        <td align="center">Вторник</td>
+        <td align="center">Среда</td>
+        <td align="center">Четверг</td>
+        <td align="center">Пятница</td>
+    </tr>
+    <tr>
+        <td>{{days['Понедельник'][0]}}</td>
+        <td>{{days['Вторник'][0]}}</td>
+        <td>{{days['Среда'][0]}}</td>
+        <td>{{days['Четверг'][0]}}</td>
+        <td>{{days['Пятница'][0]}}</td>
+    </tr>
+    <tr>
+        <td>{{days['Понедельник'][1]}}</td>
+        <td>{{days['Вторник'][1]}}</td>
+        <td>{{days['Среда'][1]}}</td>
+        <td>{{days['Четверг'][1]}}</td>
+        <td>{{days['Пятница'][1]}}</td>
+    </tr>
+    <tr>
+        <td>{{days['Понедельник'][2]}}</td>
+        <td>{{days['Вторник'][2]}}</td>
+        <td>{{days['Среда'][2]}}</td>
+        <td>{{days['Четверг'][2]}}</td>
+        <td>{{days['Пятница'][2]}}</td>
+    </tr>
+    <tr>
+        <td>{{days['Понедельник'][3]}}</td>
+        <td>{{days['Вторник'][3]}}</td>
+        <td>{{days['Среда'][3]}}</td>
+        <td>{{days['Четверг'][3]}}</td>
+        <td>{{days['Пятница'][3]}}</td>
+    </tr>
+    <tr>
+        <td>{{days['Понедельник'][4]}}</td>
+        <td>{{days['Вторник'][4]}}</td>
+        <td>{{days['Среда'][4]}}</td>
+        <td>{{days['Четверг'][4]}}</td>
+        <td>{{days['Пятница'][4]}}</td>
+    </tr>
+</table>
+{% endblock %}
