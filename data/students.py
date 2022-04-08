@@ -10,6 +10,6 @@ class Students(ORMBase):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     otchestvo = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    class_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    class_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('classes.cl_id'), nullable=True)
 
-    cls = orm.relation('Classes', back_populates='students')
+    cls = orm.relation('Classes', backref='students')

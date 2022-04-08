@@ -12,5 +12,5 @@ class Classes(ORMBase):
     schedule = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     time_schedule = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    teachers = orm.relation('Teachers')
-    students = orm.relation('Students')
+    # students = список студентов в классе
+    # teachers = список учителей класса

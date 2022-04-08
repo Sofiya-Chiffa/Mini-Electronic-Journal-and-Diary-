@@ -12,6 +12,6 @@ class Teachers(ORMBase):
     otchestvo = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     login = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    class_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    class_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('classes.cl_id'), nullable=True)
 
-    cls = orm.relation('Classes', back_populates='teachers')
+    cls = orm.relation('Classes', backref='teachers')
