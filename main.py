@@ -5,8 +5,7 @@ app = Flask('MyApp')
 
 
 db_session.global_init("db/school_db.db")
-
-
+session = db_session.create_session()
 
 
 @app.route('/')

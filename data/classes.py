@@ -1,5 +1,6 @@
 import sqlalchemy
 from .db_session import ORMBase
+import sqlalchemy.orm as orm
 
 
 class Classes(ORMBase):
@@ -10,3 +11,6 @@ class Classes(ORMBase):
     letter = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     schedule = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     time_schedule = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+
+    teachers = orm.relation('Teachers')
+    students = orm.relation('Students')

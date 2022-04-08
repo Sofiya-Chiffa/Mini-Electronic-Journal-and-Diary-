@@ -1,5 +1,6 @@
 import sqlalchemy
 from .db_session import ORMBase
+import sqlalchemy.orm as orm
 
 
 class Teachers(ORMBase):
@@ -12,3 +13,5 @@ class Teachers(ORMBase):
     login = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     class_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+
+    cls = orm.relation('Classes', back_populates='teachers')
