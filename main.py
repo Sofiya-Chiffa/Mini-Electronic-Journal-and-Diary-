@@ -23,7 +23,40 @@ def teacher_enter():
     if request.method == 'GET':
         return render_template('teacher_enter.html')
     elif request.method == 'POST':
-        return '1'
+        for teacher in session.query(Teachers).filter(Teachers.login.like(f'%{request.form["login"]}%')):
+            return redirect('/teacher/schedule')
+        else:
+            return redirect('/teacher')
+
+
+@app.route('/teacher/schedule')
+def teacher_schedule():
+    # for teacher in session.query(Teachers).filter(Teachers.name.like('%Марья%')):
+    #    d_us = teacher. ...
+    #    print(loads(d_us))
+    days = {'Понедельник': ['Математика', 'Русский язык', 'Окружающий мир', 'Литература', '-'],
+            'Вторник': ['ИЗО', 'Математика', 'Русский язык', 'Физ-ра', 'Английский язык'],
+            'Среда': ['История', 'Информатика', 'Русский язык', 'Технология', '-'],
+            'Четверг': ['География', 'Физ-ра', 'Математика', 'Русский язык', '-'],
+            'Пятница': ['Окружающий мир', 'Математика', 'Музыка', 'Литература', '-']
+            }
+    return render_template('teacher_schedule.html', days=days)
+
+
+@app.route('/teacher/homework', methods=['POST', 'GET'])
+def teacher_homework():
+    if request.method == 'GET':
+        return render_template('teacher_homework.html')
+    elif request.method == 'POST':
+        rec_dict = {
+            'subject': request.form['subject'],
+            'date': request.form['date'],
+            'homework': request.form['homework'],
+        }
+        return render_template('teacher_show_homework.html',
+                               subject=rec_dict['subject'],
+                               date=rec_dict['date'],
+                               homework=rec_dict['homework'])
 
 
 @app.route('/student', methods=['POST', 'GET'])
