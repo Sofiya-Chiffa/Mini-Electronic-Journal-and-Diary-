@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
@@ -36,6 +36,7 @@ def login():
         db_sess = db_session.create_session()
         user = db_sess.query(Users).filter(Users.login == form.username.data).first()
         if user and user.password == form.password.data:
+            login_user(user)
             return redirect(f"/{user.role}")
         return render_template('login_form.html',
                                message="Неправильный логин или пароль",
@@ -60,6 +61,7 @@ def teacher_exit():
 
 @app.route('/teacher/schedule')
 def teacher_schedule():
+    print(current_user.name)
     # for teacher in session.query(Teachers).filter(Teachers.name.like('%Марья%')):
     #    d_us = teacher. ...
     #    print(loads(d_us))
