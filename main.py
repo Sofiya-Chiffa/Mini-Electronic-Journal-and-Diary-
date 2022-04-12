@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager
-from data import db_session
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
-from data.students import Students
-from data.teachers import Teachers
+
+from data import db_session
+from data.users import Users
 
 app = Flask('MyApp')
 app.config['SECRET_KEY'] = 'brbrbr'
@@ -18,37 +18,44 @@ session = db_session.create_session()
 
 
 @login_manager.user_loader
-def load_student(s_id):
+def load_user(user_id):
     db_sess = db_session.create_session()
-    return db_sess.query(Students).get(s_id)
-
-
-@login_manager.user_loader
-def load_teacher(t_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(Teachers).get(t_id)
+    return db_sess.query(Users).get(user_id)
 
 
 class LoginForm(FlaskForm):
+    username = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
 
 
-@app.route('/')
-def teacher_or_student():
-    return render_template('teacher_or_student.html')
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(Users).filter(Users.login == form.username.data).first()
+        if user and user.password == form.password.data:
+            return redirect(f"/{user.role}")
+        return render_template('login_form.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login_form.html', form=form)
 
 
-@app.route('/teacher', methods=['POST', 'GET'])
-def teacher_enter():
-    if request.method == 'GET':
-        return render_template('teacher_enter.html')
-    elif request.method == 'POST':
-        for teacher in session.query(Teachers).filter(Teachers.login.like(f'%{request.form["login"]}%')):
-            return redirect('/teacher/schedule')
-        else:
-            return redirect('/teacher')
+# @app.route('/teacher', methods=['POST', 'GET'])
+# def teacher_enter():
+#     if request.method == 'GET':
+#         return render_template('teacher_enter.html')
+#     elif request.method == 'POST':
+#         for teacher in session.query(Teachers).filter(Teachers.login.like(f'%{request.form["login"]}%')):
+#             return redirect('/teacher/schedule')
+#         else:
+#             return redirect('/teacher')
+
+@app.route('/teacher/exit')
+def teacher_exit():
+    return redirect('/')
 
 
 @app.route('/teacher/schedule')
@@ -81,16 +88,20 @@ def teacher_homework():
                                homework=rec_dict['homework'])
 
 
-@app.route('/student', methods=['POST', 'GET'])
-def student_enter():
-    global person_id
-    if request.method == 'GET':
-        return render_template('student_enter.html')
-    elif request.method == 'POST':
-        for user in session.query(Students).filter(Students.name.like(f'%{request.form["login"]}%')):
-            return redirect('/student/diary')
-        else:
-            return redirect('/student')
+# @app.route('/student', methods=['POST', 'GET'])
+# def student_enter():
+#     global person_id
+#     if request.method == 'GET':
+#         return render_template('student_enter.html')
+#     elif request.method == 'POST':
+#         for user in session.query(Students).filter(Students.name.like(f'%{request.form["login"]}%')):
+#             return redirect('/student/diary')
+#         else:
+#             return redirect('/student')
+
+@app.route('/student/exit')
+def student_exit():
+    return redirect('/')
 
 
 @app.route('/student/diary')
