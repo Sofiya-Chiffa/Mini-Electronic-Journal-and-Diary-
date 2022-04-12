@@ -1,16 +1,38 @@
 from flask import Flask, render_template, request, redirect
+from flask_login import LoginManager
 from data import db_session
-from json import loads, dumps
-import datetime as dt
-from data.classes import Classes
-from data.homeworks import Homeworks
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
 from data.students import Students
 from data.teachers import Teachers
 
 app = Flask('MyApp')
+app.config['SECRET_KEY'] = 'brbrbr'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 db_session.global_init("db/school_db.db")
 session = db_session.create_session()
+
+
+@login_manager.user_loader
+def load_student(s_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(Students).get(s_id)
+
+
+@login_manager.user_loader
+def load_teacher(t_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(Teachers).get(t_id)
+
+
+class LoginForm(FlaskForm):
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
 
 
 @app.route('/')
