@@ -3,7 +3,8 @@ from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
-
+from json import loads
+from data.classes import Classes
 from data import db_session
 from data.users import Users
 
@@ -61,7 +62,6 @@ def teacher_exit():
 
 @app.route('/teacher/schedule')
 def teacher_schedule():
-    print(current_user.name)
     # for teacher in session.query(Teachers).filter(Teachers.name.like('%Марья%')):
     #    d_us = teacher. ...
     #    print(loads(d_us))
@@ -122,14 +122,12 @@ def student_diary():
 
 @app.route('/student/schedule')
 def student_schedule():
-    # for user in session.query(Students).filter(Students.name.like('%Вася%')):
-    #    d_us = user.class_id.schedule
-    #    print(loads(d_us))
-    days = {'Понедельник': ['Математика', 'Русский язык', 'Окружающий мир', 'Литература', '-'],
-            'Вторник': ['ИЗО', 'Математика', 'Русский язык', 'Физ-ра', 'Английский язык'],
-            'Среда': ['История', 'Информатика', 'Русский язык', 'Технология', '-'],
-            'Четверг': ['География', 'Физ-ра', 'Математика', 'Русский язык', '-'],
-            'Пятница': ['Окружающий мир', 'Математика', 'Музыка', 'Литература', '-']
+    sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
+    days = {'Понедельник': [x for x in sch['mon']],
+            'Вторник': [x for x in sch['tue']],
+            'Среда': [x for x in sch['wed']],
+            'Четверг': [x for x in sch['thu']],
+            'Пятница': [x for x in sch['fri']]
             }
     return render_template('student_schedule.html', days=days)
 
