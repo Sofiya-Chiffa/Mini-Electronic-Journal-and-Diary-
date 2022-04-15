@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
@@ -7,6 +8,7 @@ from json import loads
 from data.classes import Classes
 from data import db_session
 from data.users import Users
+from data.homeworks import Homeworks
 
 app = Flask('MyApp')
 app.config['SECRET_KEY'] = 'brbrbr'
@@ -62,16 +64,16 @@ def teacher_exit():
 
 @app.route('/teacher/schedule')
 def teacher_schedule():
-    # for teacher in session.query(Teachers).filter(Teachers.name.like('%Марья%')):
-    #    d_us = teacher. ...
-    #    print(loads(d_us))
-    days = {'Понедельник': ['Математика', 'Русский язык', 'Окружающий мир', 'Литература', '-'],
-            'Вторник': ['ИЗО', 'Математика', 'Русский язык', 'Физ-ра', 'Английский язык'],
-            'Среда': ['История', 'Информатика', 'Русский язык', 'Технология', '-'],
-            'Четверг': ['География', 'Физ-ра', 'Математика', 'Русский язык', '-'],
-            'Пятница': ['Окружающий мир', 'Математика', 'Музыка', 'Литература', '-']
+    sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
+    days = {'Понедельник': [x for x in sch['mon']],
+            'Вторник': [x for x in sch['tue']],
+            'Среда': [x for x in sch['wed']],
+            'Четверг': [x for x in sch['thu']],
+            'Пятница': [x for x in sch['fri']]
             }
-    return render_template('teacher_schedule.html', days=days)
+    rngs = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().time_schedule)
+    times = rngs['day']
+    return render_template('teacher_schedule.html', days=days, times=times)
 
 
 @app.route('/teacher/homework', methods=['POST', 'GET'])
@@ -82,11 +84,25 @@ def teacher_homework():
         rec_dict = {
             'subject': request.form['subject'],
             'date': request.form['date'],
-            'homework': request.form['homework'],
+            'class_num': int(request.form['class_num']),
+            'class_name': request.form['class_name'],
+            'homework': request.form['homework']
         }
+
+        hm = Homeworks()
+        hm.date = datetime.strptime(rec_dict['date'], '%d.%m.%Y')
+        hm.subject = rec_dict['subject']
+        hm.class_num = rec_dict['class_num']
+        hm.class_name = rec_dict['class_name']
+        hm.homework = rec_dict['homework']
+        session.add(hm)
+        session.commit()
+
         return render_template('teacher_show_homework.html',
                                subject=rec_dict['subject'],
                                date=rec_dict['date'],
+                               class_num=rec_dict['class_num'],
+                               class_name=rec_dict['class_name'],
                                homework=rec_dict['homework'])
 
 
