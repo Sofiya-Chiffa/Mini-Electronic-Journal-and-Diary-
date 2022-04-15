@@ -40,7 +40,7 @@ def login():
         user = db_sess.query(Users).filter(Users.login == form.username.data).first()
         if user and user.password == form.password.data:
             login_user(user)
-            return redirect(f"/{user.role}")
+            return redirect(f"/{user.role}/0")
         return render_template('login_form.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -96,11 +96,9 @@ def student_diary(n):
                   'Суббота': str(today - dt.timedelta(days=(today_weekday - 5 - (int(n) * 7)))),
                   'Воскресенье': str(today - dt.timedelta(days=(today_weekday - 6 - (int(n) * 7))))}
     sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
-    # лол, что?
-    print(session.query(Homeworks).filter(str(Homeworks.date).split()[0] == week_dates['Вторник'] and
+
+    print(session.query(Homeworks).filter(Homeworks.date == week_dates['Вторник'] and
                                           Homeworks.subject == 'Алгебра').first())
-    print(str(session.query(Homeworks).filter(Homeworks.subject == 'Алгебра').first().date).split()[0] ==
-          week_dates['Вторник'])
     days = {'Понедельник': [[x, 1] for x in sch['mon']],
             'Вторник': [[x, 1] for x in sch['tue']],
             'Среда': [[x, 1] for x in sch['wed']],
