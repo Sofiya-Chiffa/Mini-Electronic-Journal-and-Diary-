@@ -4,9 +4,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from json import loads
+from data.homeworks import Homeworks
 from data.classes import Classes
 from data import db_session
 from data.users import Users
+import datetime as dt
 
 app = Flask('MyApp')
 app.config['SECRET_KEY'] = 'brbrbr'
@@ -45,16 +47,6 @@ def login():
     return render_template('login_form.html', form=form)
 
 
-# @app.route('/teacher', methods=['POST', 'GET'])
-# def teacher_enter():
-#     if request.method == 'GET':
-#         return render_template('teacher_enter.html')
-#     elif request.method == 'POST':
-#         for teacher in session.query(Teachers).filter(Teachers.login.like(f'%{request.form["login"]}%')):
-#             return redirect('/teacher/schedule')
-#         else:
-#             return redirect('/teacher')
-
 @app.route('/teacher/exit')
 def teacher_exit():
     return redirect('/')
@@ -62,9 +54,6 @@ def teacher_exit():
 
 @app.route('/teacher/schedule')
 def teacher_schedule():
-    # for teacher in session.query(Teachers).filter(Teachers.name.like('%Марья%')):
-    #    d_us = teacher. ...
-    #    print(loads(d_us))
     days = {'Понедельник': ['Математика', 'Русский язык', 'Окружающий мир', 'Литература', '-'],
             'Вторник': ['ИЗО', 'Математика', 'Русский язык', 'Физ-ра', 'Английский язык'],
             'Среда': ['История', 'Информатика', 'Русский язык', 'Технология', '-'],
@@ -90,17 +79,6 @@ def teacher_homework():
                                homework=rec_dict['homework'])
 
 
-# @app.route('/student', methods=['POST', 'GET'])
-# def student_enter():
-#     global person_id
-#     if request.method == 'GET':
-#         return render_template('student_enter.html')
-#     elif request.method == 'POST':
-#         for user in session.query(Students).filter(Students.name.like(f'%{request.form["login"]}%')):
-#             return redirect('/student/diary')
-#         else:
-#             return redirect('/student')
-
 @app.route('/student/exit')
 def student_exit():
     return redirect('/')
@@ -108,16 +86,28 @@ def student_exit():
 
 @app.route('/student/diary')
 def student_diary():
-    days = {'Понедельник': [['Математика', '...'], ['Русский язык', '..'], ['Окружающий мир', ''], ['Литература', ''],
-                            ['', '']],
-            'Вторник': [['ИЗО', '.'], ['Математика', '...'], ['Русский язык', ''], ['Физ-ра', ''],
-                        ['Английский язык', '.']],
-            'Среда': [['История', '.'], ['Информатика', ''], ['Русский язык', '.'], ['Технология', '..'], ['', '']],
-            'Четверг': [['География', '..'], ['Физ-ра', '.'], ['Математика', ''], ['Русский язык', '.'], ['', '']],
-            'Пятница': [['Окружающий мир', '..'], ['Математика', '....'], ['Музыка', '..'], ['Литература', '..'],
-                        ['', '']]
+    today = dt.datetime.date(dt.datetime.today())
+    today_weekday = dt.datetime.today().weekday()
+    week_dates = {'Понедельник': str(today - dt.timedelta(days=(today_weekday - 0))),
+                  'Вторник': str(today - dt.timedelta(days=(today_weekday - 1))),
+                  'Среда': str(today - dt.timedelta(days=(today_weekday - 2))),
+                  'Четверг': str(today - dt.timedelta(days=(today_weekday - 3))),
+                  'Пятница': str(today - dt.timedelta(days=(today_weekday - 4))),
+                  'Суббота': str(today - dt.timedelta(days=(today_weekday - 5))),
+                  'Воскресенье': str(today - dt.timedelta(days=(today_weekday - 6)))}
+    sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
+    # лол, что?
+    print(session.query(Homeworks).filter(str(Homeworks.date).split()[0] == week_dates['Вторник'] and
+                                          Homeworks.subject == 'Алгебра').first())
+    print(str(session.query(Homeworks).filter(Homeworks.subject == 'Алгебра').first().date).split()[0] ==
+          week_dates['Вторник'])
+    days = {'Понедельник': [[x, 1] for x in sch['mon']],
+            'Вторник': [[x, 1] for x in sch['tue']],
+            'Среда': [[x, 1] for x in sch['wed']],
+            'Четверг': [[x, 1] for x in sch['thu']],
+            'Пятница': [[x, 1] for x in sch['fri']]
             }
-    return render_template('student_diary.html', days=days)
+    return render_template('student_diary.html', days=days, week_dates=week_dates)
 
 
 @app.route('/student/schedule')
@@ -145,7 +135,13 @@ def student_grade():
 
 @app.route('/student/profile')
 def student_profile():
-    return render_template('student_profile.html')
+    data = {'имя': current_user.name, 'фамилия': current_user.surname,
+            'отчество': current_user.otchestvo, 'статус': 'ученик',
+            'класс': str(
+                session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().number) + session.query(
+                Classes).filter(Classes.cl_id == current_user.class_id).first().letter
+            }
+    return render_template('student_profile.html', data=data)
 
 
 app.run(port=8080, host='127.0.0.1', debug=True)

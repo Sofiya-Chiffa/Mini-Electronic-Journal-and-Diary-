@@ -1,7 +1,28 @@
 {% extends "student_base.html" %}
 
-{% block title %}Дневник{% endblock %}
+{% block title %}Профиль{% endblock %}
 
 {% block content %}
 <br><br><br>
+<div class="main">
+    <div class="container">
+        <h1 align="center">Мои Данные</h1>
+        <dl class="row">
+            <dt class="col-sm-2">Имя:</dt>
+            <dd class="col-sm-9">{{data['имя']}}</dd>
+
+            <dt class="col-sm-2">Фамилия:</dt>
+            <dd class="col-sm-9">{{data['фамилия']}}</dd>
+
+            <dt class="col-sm-2">Отчество:</dt>
+            <dd class="col-sm-9">{{data['отчество']}}</dd>
+
+            <dt class="col-sm-2">Статус:</dt>
+            <dd class="col-sm-9">{{data['статус']}}</dd>
+
+            <dt class="col-sm-2">Класс:</dt>
+            <dd class="col-sm-9">{{data['класс']}}</dd>
+        </dl>
+    </div>
+</div>
 {% endblock %}
