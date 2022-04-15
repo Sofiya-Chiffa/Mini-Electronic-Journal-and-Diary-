@@ -129,7 +129,9 @@ def student_schedule():
             'Четверг': [x for x in sch['thu']],
             'Пятница': [x for x in sch['fri']]
             }
-    return render_template('student_schedule.html', days=days)
+    rngs = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().time_schedule)
+    times = rngs['day']
+    return render_template('student_schedule.html', days=days, times=times)
 
 
 @app.route('/student/grade')
