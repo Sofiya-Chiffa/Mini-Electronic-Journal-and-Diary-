@@ -1,13 +1,15 @@
-from datetime import datetime
+import datetime
+from json import loads
+
 from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
-from json import loads
-from data.homeworks import Homeworks
-from data.classes import Classes
+
 from data import db_session
+from data.classes import Classes
+from data.homeworks import Homeworks
 from data.users import Users
 
 app = Flask('MyApp')
@@ -40,7 +42,7 @@ def login():
         user = db_sess.query(Users).filter(Users.login == form.username.data).first()
         if user and user.password == form.password.data:
             login_user(user)
-            return redirect(f"/{user.role}/0")
+            return redirect(f"/{user.role}")
         return render_template('login_form.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -90,7 +92,7 @@ def teacher_homework():
         }
 
         hm = Homeworks()
-        hm.date = datetime.strptime(rec_dict['date'], '%d.%m.%Y')
+        hm.date = datetime.datetime.date(datetime.datetime.strptime(rec_dict['date'], '%d.%m.%Y'))
         hm.subject = rec_dict['subject']
         hm.class_num = rec_dict['class_num']
         hm.class_name = rec_dict['class_name']
@@ -124,7 +126,7 @@ def student_exit():
 
 @app.route('/student/diary/<n>')
 def student_diary(n):
-    today = datetime.datetime.date(datetime.datetime.today())
+    today = datetime.datetime.today()
     today_weekday = datetime.datetime.today().weekday()
     week_dates = {'Понедельник': str(today - datetime.timedelta(days=(today_weekday - 0 - (int(n) * 7)))),
                   'Вторник': str(today - datetime.timedelta(days=(today_weekday - 1 - (int(n) * 7)))),
@@ -134,16 +136,20 @@ def student_diary(n):
                   'Суббота': str(today - datetime.timedelta(days=(today_weekday - 5 - (int(n) * 7)))),
                   'Воскресенье': str(today - datetime.timedelta(days=(today_weekday - 6 - (int(n) * 7))))}
     sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
-
-    print(session.query(Homeworks).filter(Homeworks.date == week_dates['Вторник'] and
-                                          Homeworks.subject == 'Алгебра').first())
+    cls_cur = session.query(Classes).filter(Classes.cl_id == current_user.class_id).first()
+    print(session.query(Homeworks).filter(
+        Homeworks.date == datetime.datetime.strptime(week_dates['Вторник'].split(' ')[0],
+                                                     '%Y-%m-%d') and Homeworks.subject == 'Алгебра' and Homeworks.class_num == cls_cur.number and Homeworks.class_name == cls_cur.letter).first().homework)
+    homework_data = session.query(Homeworks).filter(Homeworks.class_num == cls_cur.number and Homeworks.class_name == cls_cur.letter).all()
+    for d in homework_data:
+        print(d.homework)
     days = {'Понедельник': [[x, 1] for x in sch['mon']],
-            'Вторник': [[x, 1] for x in sch['tue']],
+            'Вторник': [[x, 2] for x in sch['tue']],
             'Среда': [[x, 1] for x in sch['wed']],
             'Четверг': [[x, 1] for x in sch['thu']],
             'Пятница': [[x, 1] for x in sch['fri']]
             }
-    return render_template('student_diary.html', days=days, week_dates=week_dates, n=int(n))
+    return render_template('student_diary.html', days=days, week_dates=week_dates, n=int(n), datetime=datetime.datetime)
 
 
 @app.route('/student/schedule')

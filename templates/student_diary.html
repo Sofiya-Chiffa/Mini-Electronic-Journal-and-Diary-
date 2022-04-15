@@ -21,7 +21,8 @@
         </nav>
         <br>
         {% for day in days.keys() %}
-        <h4 align="center">{{day}}, {{week_dates[day].split('-')[2]}} {{a[week_dates[day].split('-')[1]]}}</h4>
+        {% set tod_d = datetime.strptime(week_dates[day].split('.')[0], '%Y-%m-%d %H:%M:%S') %}
+        <h4 align="center">{{day}}, {{tod_d.day}} {{a[week_dates[day].split('-')[1]]}}</h4>
         <table align="center" class="table table-bordered">
             <tr>
                 <td width="10">08:30</td>
