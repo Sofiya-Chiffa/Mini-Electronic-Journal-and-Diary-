@@ -9,6 +9,17 @@
     <div class="container">
         <h1 align="center">Дневник</h1>
         </br>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href={{n - 1}}>Предыдущая неделя</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href={{n + 1}}>Следующая неделя</a>
+                </li>
+            </ul>
+        </nav>
+        <br>
         {% for day in days.keys() %}
         <h4 align="center">{{day}}, {{week_dates[day].split('-')[2]}} {{a[week_dates[day].split('-')[1]]}}</h4>
         <table align="center" class="table table-bordered">

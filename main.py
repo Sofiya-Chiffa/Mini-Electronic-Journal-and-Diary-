@@ -84,17 +84,17 @@ def student_exit():
     return redirect('/')
 
 
-@app.route('/student/diary')
-def student_diary():
+@app.route('/student/diary/<n>')
+def student_diary(n):
     today = dt.datetime.date(dt.datetime.today())
     today_weekday = dt.datetime.today().weekday()
-    week_dates = {'Понедельник': str(today - dt.timedelta(days=(today_weekday - 0))),
-                  'Вторник': str(today - dt.timedelta(days=(today_weekday - 1))),
-                  'Среда': str(today - dt.timedelta(days=(today_weekday - 2))),
-                  'Четверг': str(today - dt.timedelta(days=(today_weekday - 3))),
-                  'Пятница': str(today - dt.timedelta(days=(today_weekday - 4))),
-                  'Суббота': str(today - dt.timedelta(days=(today_weekday - 5))),
-                  'Воскресенье': str(today - dt.timedelta(days=(today_weekday - 6)))}
+    week_dates = {'Понедельник': str(today - dt.timedelta(days=(today_weekday - 0 - (int(n) * 7)))),
+                  'Вторник': str(today - dt.timedelta(days=(today_weekday - 1 - (int(n) * 7)))),
+                  'Среда': str(today - dt.timedelta(days=(today_weekday - 2 - (int(n) * 7)))),
+                  'Четверг': str(today - dt.timedelta(days=(today_weekday - 3 - (int(n) * 7)))),
+                  'Пятница': str(today - dt.timedelta(days=(today_weekday - 4 - (int(n) * 7)))),
+                  'Суббота': str(today - dt.timedelta(days=(today_weekday - 5 - (int(n) * 7)))),
+                  'Воскресенье': str(today - dt.timedelta(days=(today_weekday - 6 - (int(n) * 7))))}
     sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
     # лол, что?
     print(session.query(Homeworks).filter(str(Homeworks.date).split()[0] == week_dates['Вторник'] and
@@ -107,7 +107,7 @@ def student_diary():
             'Четверг': [[x, 1] for x in sch['thu']],
             'Пятница': [[x, 1] for x in sch['fri']]
             }
-    return render_template('student_diary.html', days=days, week_dates=week_dates)
+    return render_template('student_diary.html', days=days, week_dates=week_dates, n=int(n))
 
 
 @app.route('/student/schedule')
