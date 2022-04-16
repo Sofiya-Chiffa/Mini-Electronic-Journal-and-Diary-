@@ -1,6 +1,6 @@
 import datetime
 from json import loads
-import os
+from data.grades import Grade
 from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
@@ -98,6 +98,32 @@ def teacher_homework():
                                homework=rec_dict['homework'])
 
 
+@app.route('/teacher/grade/<obj_name>')
+def teacher_grade(obj_name):
+    std_all_inf = session.query(Users).filter(Users.class_id == current_user.class_id,
+                                              Users.role == 'student/diary/0').all()
+    grades_list = dict()
+    for std in std_all_inf:
+        grades_list[f'{std.surname} {std.name} {std.otchestvo}'] = session.query(Grade).filter(Grade.name == std.name,
+                                                                                               Grade.surname == std.surname,
+                                                                                               Grade.subject == obj_name).all()
+        if grades_list[f'{std.surname} {std.name} {std.otchestvo}'] is None:
+            grades_list[f'{std.surname} {std.name} {std.otchestvo}'] = list()
+        else:
+            grades_std = list()
+            for d in grades_list[f'{std.surname} {std.name} {std.otchestvo}']:
+                grades_std.append(d.grade)
+            grades_list[f'{std.surname} {std.name} {std.otchestvo}'] = grades_std
+    students = list()
+    print(grades_list)
+    for k in grades_list.keys():
+        if len(grades_list[k]) != 0:
+            students.append([k, grades_list[k], round(sum(grades_list[k]) / len(grades_list[k]), 2)])
+        else:
+            students.append([k, '', 0.0])
+    return render_template('teacher_grade.html', students=students, obj=obj_name)
+
+
 @app.route('/student/exit')
 def student_exit():
     return redirect('/')
@@ -116,11 +142,26 @@ def student_diary(n):
                   'Воскресенье': str(today - datetime.timedelta(days=(today_weekday - 6 - (int(n) * 7))))}
     sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
     cls_cur = session.query(Classes).filter(Classes.cl_id == current_user.class_id).first()
-    days = {'Понедельник': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Понедельник'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['mon']],
-            'Вторник': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Вторник'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['tue']],
-            'Среда': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Среда'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['wed']],
-            'Четверг': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Четверг'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['thu']],
-            'Пятница': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Пятница'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['fri']]
+    days = {'Понедельник': [[x, session.query(Homeworks).filter(
+        Homeworks.date == datetime.datetime.strptime(week_dates['Понедельник'].split(' ')[0], '%Y-%m-%d'),
+        Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()]
+                            for x in sch['mon']],
+            'Вторник': [[x, session.query(Homeworks).filter(
+                Homeworks.date == datetime.datetime.strptime(week_dates['Вторник'].split(' ')[0], '%Y-%m-%d'),
+                Homeworks.subject == x, Homeworks.class_num == cls_cur.number,
+                Homeworks.class_name == cls_cur.letter).first()] for x in sch['tue']],
+            'Среда': [[x, session.query(Homeworks).filter(
+                Homeworks.date == datetime.datetime.strptime(week_dates['Среда'].split(' ')[0], '%Y-%m-%d'),
+                Homeworks.subject == x, Homeworks.class_num == cls_cur.number,
+                Homeworks.class_name == cls_cur.letter).first()] for x in sch['wed']],
+            'Четверг': [[x, session.query(Homeworks).filter(
+                Homeworks.date == datetime.datetime.strptime(week_dates['Четверг'].split(' ')[0], '%Y-%m-%d'),
+                Homeworks.subject == x, Homeworks.class_num == cls_cur.number,
+                Homeworks.class_name == cls_cur.letter).first()] for x in sch['thu']],
+            'Пятница': [[x, session.query(Homeworks).filter(
+                Homeworks.date == datetime.datetime.strptime(week_dates['Пятница'].split(' ')[0], '%Y-%m-%d'),
+                Homeworks.subject == x, Homeworks.class_num == cls_cur.number,
+                Homeworks.class_name == cls_cur.letter).first()] for x in sch['fri']]
             }
     return render_template('student_diary.html', days=days, week_dates=week_dates, n=int(n), datetime=datetime.datetime)
 
@@ -162,4 +203,4 @@ def student_profile():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8080, host='127.0.0.1', debug=True)

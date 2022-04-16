@@ -3,7 +3,7 @@
 {% block title %}Расписание для класса #тут класс будет{% endblock %}
 
 {% block content %}
-</br></br></br>
+<br><br><br>
 <div class="main">
     <div class="container">
         <p class="fs-1">
@@ -16,10 +16,14 @@
                         <li class="list-group-item">{{days['Понедельник'][1]}}</li>
                         <li class="list-group-item">{{days['Понедельник'][2]}}</li>
                         <li class="list-group-item">{{days['Понедельник'][3]}}</li>
-                        <li class="list-group-item">{% if days['Понедельник'][4] %}<div>{{days['Понедельник'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
+                        <li class="list-group-item">{% if days['Понедельник'][4] %}
+                            <div>{{days['Понедельник'][4]}}</div>
+                            {% else %}
+                            <div>-</div>
+                            {% endif %}
                         </li>
                     </ul>
+                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Вторник</h4>
@@ -28,10 +32,14 @@
                         <li class="list-group-item">{{days['Вторник'][1]}}</li>
                         <li class="list-group-item">{{days['Вторник'][2]}}</li>
                         <li class="list-group-item">{{days['Вторник'][3]}}</li>
-                        <li class="list-group-item">{% if days['Вторник'][4] %}<div>{{days['Вторник'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
+                        <li class="list-group-item">{% if days['Вторник'][4] %}
+                            <div>{{days['Вторник'][4]}}</div>
+                            {% else %}
+                            <div>-</div>
+                            {% endif %}
                         </li>
                     </ul>
+                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Среда</h4>
@@ -40,10 +48,14 @@
                         <li class="list-group-item">{{days['Среда'][1]}}</li>
                         <li class="list-group-item">{{days['Среда'][2]}}</li>
                         <li class="list-group-item">{{days['Среда'][3]}}</li>
-                        <li class="list-group-item">{% if days['Среда'][4] %}<div>{{days['Среда'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
+                        <li class="list-group-item">{% if days['Среда'][4] %}
+                            <div>{{days['Среда'][4]}}</div>
+                            {% else %}
+                            <div>-</div>
+                            {% endif %}
                         </li>
                     </ul>
+                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Четверг</h4>
@@ -52,10 +64,14 @@
                         <li class="list-group-item">{{days['Четверг'][1]}}</li>
                         <li class="list-group-item">{{days['Четверг'][2]}}</li>
                         <li class="list-group-item">{{days['Четверг'][3]}}</li>
-                        <li class="list-group-item">{% if days['Четверг'][4] %}<div>{{days['Четверг'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
+                        <li class="list-group-item">{% if days['Четверг'][4] %}
+                            <div>{{days['Четверг'][4]}}</div>
+                            {% else %}
+                            <div>-</div>
+                            {% endif %}
                         </li>
                     </ul>
+                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Пятница</h4>
@@ -64,10 +80,14 @@
                         <li class="list-group-item">{{days['Пятница'][1]}}</li>
                         <li class="list-group-item">{{days['Пятница'][2]}}</li>
                         <li class="list-group-item">{{days['Пятница'][3]}}</li>
-                        <li class="list-group-item">{% if days['Пятница'][4] %}<div>{{days['Пятница'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
+                        <li class="list-group-item">{% if days['Пятница'][4] %}
+                            <div>{{days['Пятница'][4]}}</div>
+                            {% else %}
+                            <div>-</div>
+                            {% endif %}
                         </li>
                     </ul>
+                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Звонки</h4>
@@ -76,6 +96,7 @@
                         <li class="list-group-item">{{ time }}</li>
                         {% endfor %}
                     </ul>
+                    <br>
                 </div>
             </div>
         </div>

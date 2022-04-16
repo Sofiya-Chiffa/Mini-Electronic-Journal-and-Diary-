@@ -1,6 +1,0 @@
-flask
-flask_login
-wtforms
-flask_wtf
-datetime
-wtforms.validators
