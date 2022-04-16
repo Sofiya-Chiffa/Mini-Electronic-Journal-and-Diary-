@@ -27,32 +27,42 @@
             <tr>
                 <td width="10">08:30</td>
                 <td align="center" width="150">{{ days[day][0][0] }}</td>
-                <td>{{ days[day][0][1] }}</td>
+                {% if days[day][0][1] != None %}
+                <td>{{ days[day][0][1].homework }}</td> {% else %}<td> </td>
+                {% endif %}
                 <td width="60"></td>
             </tr>
             <tr>
                 <td width="10">09:25</td>
                 <td align="center" width="150">{{ days[day][1][0] }}</td>
-                <td>{{ days[day][1][1] }}</td>
+                {% if days[day][1][1] != None %}
+                <td>{{ days[day][1][1].homework }}</td> {% else %}<td> </td>
+                {% endif %}
                 <td width="60"></td>
             </tr>
             <tr>
                 <td width="10">10:30</td>
                 <td align="center" width="150">{{ days[day][2][0] }}</td>
-                <td>{{ days[day][2][1] }}</td>
+                {% if days[day][2][1] != None %}
+                <td>{{ days[day][2][1].homework }}</td> {% else %}<td> </td>
+                {% endif %}
                 <td width="60"></td>
             </tr>
             <tr>
                 <td width="10">11:25</td>
                 <td align="center" width="150">{{ days[day][3][0] }}</td>
-                <td>{{ days[day][3][1] }}</td>
+                {% if days[day][3][1] != None %}
+                <td>{{ days[day][3][1].homework }}</td> {% else %}<td> </td>
+                {% endif %}
                 <td width="60"></td>
             </tr>
             {% if days[day][4] %}
             <tr>
                 <td width="10">12:30</td>
                 <td align="center" width="150">{{ days[day][4][0] }}</td>
-                <td>{{ days[day][4][1] }}</td>
+                {% if days[day][4][1] != None %}
+                <td>{{ days[day][4][1].homework }}</td> {% else %}<td> </td>
+                {% endif %}
                 <td width="60"></td>
             </tr>
             {% endif %}

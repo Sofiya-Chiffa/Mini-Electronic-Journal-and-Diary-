@@ -49,16 +49,6 @@ def login():
     return render_template('login_form.html', form=form)
 
 
-# @app.route('/teacher', methods=['POST', 'GET'])
-# def teacher_enter():
-#     if request.method == 'GET':
-#         return render_template('teacher_enter.html')
-#     elif request.method == 'POST':
-#         for teacher in session.query(Teachers).filter(Teachers.login.like(f'%{request.form["login"]}%')):
-#             return redirect('/teacher/schedule')
-#         else:
-#             return redirect('/teacher')
-
 @app.route('/teacher/exit')
 def teacher_exit():
     return redirect('/')
@@ -108,17 +98,6 @@ def teacher_homework():
                                homework=rec_dict['homework'])
 
 
-# @app.route('/student', methods=['POST', 'GET'])
-# def student_enter():
-#     global person_id
-#     if request.method == 'GET':
-#         return render_template('student_enter.html')
-#     elif request.method == 'POST':
-#         for user in session.query(Students).filter(Students.name.like(f'%{request.form["login"]}%')):
-#             return redirect('/student/diary')
-#         else:
-#             return redirect('/student')
-
 @app.route('/student/exit')
 def student_exit():
     return redirect('/')
@@ -137,17 +116,11 @@ def student_diary(n):
                   'Воскресенье': str(today - datetime.timedelta(days=(today_weekday - 6 - (int(n) * 7))))}
     sch = loads(session.query(Classes).filter(Classes.cl_id == current_user.class_id).first().schedule)
     cls_cur = session.query(Classes).filter(Classes.cl_id == current_user.class_id).first()
-    print(session.query(Homeworks).filter(
-        Homeworks.date == datetime.datetime.strptime(week_dates['Вторник'].split(' ')[0],
-                                                     '%Y-%m-%d') and Homeworks.subject == 'Алгебра' and Homeworks.class_num == cls_cur.number and Homeworks.class_name == cls_cur.letter).first().homework)
-    homework_data = session.query(Homeworks).filter(Homeworks.class_num == cls_cur.number and Homeworks.class_name == cls_cur.letter).all()
-    for d in homework_data:
-        print(d.homework)
-    days = {'Понедельник': [[x, 1] for x in sch['mon']],
-            'Вторник': [[x, 2] for x in sch['tue']],
-            'Среда': [[x, 1] for x in sch['wed']],
-            'Четверг': [[x, 1] for x in sch['thu']],
-            'Пятница': [[x, 1] for x in sch['fri']]
+    days = {'Понедельник': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Понедельник'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['mon']],
+            'Вторник': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Вторник'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['tue']],
+            'Среда': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Среда'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['wed']],
+            'Четверг': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Четверг'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['thu']],
+            'Пятница': [[x, session.query(Homeworks).filter(Homeworks.date == datetime.datetime.strptime(week_dates['Пятница'].split(' ')[0], '%Y-%m-%d'), Homeworks.subject == x, Homeworks.class_num == cls_cur.number, Homeworks.class_name == cls_cur.letter).first()] for x in sch['fri']]
             }
     return render_template('student_diary.html', days=days, week_dates=week_dates, n=int(n), datetime=datetime.datetime)
 
