@@ -1,5 +1,5 @@
 flask
-json
+import json
 flask_login
 wtforms
 flask_wtf
