@@ -1,6 +1,6 @@
 import datetime
 from json import loads
-
+import os
 from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
@@ -161,4 +161,5 @@ def student_profile():
     return render_template('student_profile.html', data=data)
 
 
-app.run(port=8080, host='127.0.0.1', debug=True)
+if __name__ == '__main__':
+    app.run(port=8080, host='127.0.0.1')
