@@ -98,8 +98,19 @@ def teacher_homework():
                                homework=rec_dict['homework'])
 
 
-@app.route('/teacher/grade/<obj_name>')
+@app.route('/teacher/grade/<obj_name>', methods=['POST', 'GET'])
 def teacher_grade(obj_name):
+    if request.method == 'POST':
+        gr = Grade()
+        gr.date = datetime.datetime.date(datetime.datetime.strptime(request.form['date'], '%d.%m.%Y'))
+        gr.subject = obj_name
+        gr.name = session.query(Users).filter(Users.surname == request.form['name'], Users.class_id == current_user.class_id).first().name
+        gr.surname = request.form['name']
+        gr.grade = request.form['grade']
+        session.add(gr)
+        session.commit()
+    lst_obj = ['Русский', 'Английский', 'Алгебра', 'Литература', 'Информатика', 'ИЗО',
+               'Физ-ра', 'Музыка']
     std_all_inf = session.query(Users).filter(Users.class_id == current_user.class_id,
                                               Users.role == 'student/diary/0').all()
     grades_list = dict()
@@ -115,13 +126,12 @@ def teacher_grade(obj_name):
                 grades_std.append(d.grade)
             grades_list[f'{std.surname} {std.name} {std.otchestvo}'] = grades_std
     students = list()
-    print(grades_list)
     for k in grades_list.keys():
         if len(grades_list[k]) != 0:
             students.append([k, grades_list[k], round(sum(grades_list[k]) / len(grades_list[k]), 2)])
         else:
             students.append([k, '', 0.0])
-    return render_template('teacher_grade.html', students=students, obj=obj_name)
+    return render_template('teacher_grade.html', students=students, obj=obj_name, lst_obj=lst_obj)
 
 
 @app.route('/student/exit')

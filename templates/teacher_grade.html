@@ -1,31 +1,95 @@
 {% extends "teacher_base.html" %}
 
+{% block title %}Оценки{% endblock %}
+
 {% block content %}
 <br><br><br>
 
 <div class="main">
     <div class="container">
+        <ul class="nav justify-content-center">
+            {% for ob in lst_obj %}
+            <li class="nav-item">
+                <a class="nav-link" href={{ob}}>{{ob}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <br>
         <h4 align="center">{{obj}}</h4>
         <table class="table table-striped table-bordered dt-responsive nowrap dataTable" cellspacing="0" width="100%">
             <thead>
-                    <tr>
-                        <th width="100">ФИО</th>
-                        <th>Оценки</th>
-                        <th width="20">Сред.балл</th>
-                    </tr>
-                    {% for student in students %}
-                    <tr>
-                        <td>{{student[0]}}</td>
-                        <td>
-                           {% for gr in student[1] %}
-                            <button type="button" class="btn btn-outline-success" disabled>{{gr}}</button>
-                            {% endfor %}
-                        </td>
-                        <td>{{student[2]}}</td>
-                    </tr>
+            <tr>
+                <th width="100">ФИО</th>
+                <th>Оценки</th>
+                <th width="20">Сред.балл</th>
+                <th width="50"></th>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td>{{student[0]}}</td>
+                <td>
+                    {% for gr in student[1] %}
+                    <button type="button" class="btn btn-outline-success" disabled>{{gr}}</button>
                     {% endfor %}
-                </thead>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-primary me-md-2" disabled>{{student[2]}}</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-success" data-name={{student[0]}} data-bs-toggle="modal"
+                            data-bs-target="#modal">
+                        +
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            </thead>
         </table>
     </div>
 </div>
-{% endblock %}
+
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавить оценку</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="login_form" method="post">
+                    <div class="form-group">
+                        <label for="gradeSelect">Нажмите и выберите оценку:</label>
+                        <select class="form-control" id="gradeSelect" name="grade">
+                            <option>5</option>
+                            <option>4</option>
+                            <option>3</option>
+                            <option>2</option>
+                        </select>
+                    </div>
+                    <input type="login" class="form-control" id="date" aria-describedby="loginHelp"
+                        placeholder="Число: (день.месяц.год)" name="date">
+                    <input id="hide" type="hidden" value="" name="name">
+                    <button type="submit" class="btn btn-primary">Готово</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+            crossorigin="anonymous"></script>
+    <script>
+$(function() {
+  $(".btn").click(
+    function() {
+      var name = $(this).attr('data-name');
+
+      $("#hide").attr('value', name);
+    })
+});
+
+
+
+    </script>
+    {% endblock %}
