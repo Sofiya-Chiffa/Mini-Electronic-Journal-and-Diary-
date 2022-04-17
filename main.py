@@ -1,7 +1,9 @@
 import datetime
+import json
 from json import loads
+from flask_restful import reqparse, abort, Api, Resource
 from data.grades import Grade
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_login import LoginManager, current_user, login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -13,6 +15,7 @@ from data.homeworks import Homeworks
 from data.users import Users
 
 app = Flask('MyApp')
+api = Api(app)
 app.config['SECRET_KEY'] = 'brbrbr'
 
 login_manager = LoginManager()
@@ -104,7 +107,8 @@ def teacher_grade(obj_name):
         gr = Grade()
         gr.date = datetime.datetime.date(datetime.datetime.strptime(request.form['date'], '%d.%m.%Y'))
         gr.subject = obj_name
-        gr.name = session.query(Users).filter(Users.surname == request.form['name'], Users.class_id == current_user.class_id).first().name
+        gr.name = session.query(Users).filter(Users.surname == request.form['name'],
+                                              Users.class_id == current_user.class_id).first().name
         gr.surname = request.form['name']
         gr.grade = request.form['grade']
         session.add(gr)
@@ -211,6 +215,40 @@ def student_profile():
             }
     return render_template('student_profile.html', data=data)
 
+
+class AllInf(Resource):
+    def get(self, cls_nl):
+        if len(cls_nl) < 2:
+            return jsonify({'Класс отсутствует': None})
+        cls = session.query(Classes.cl_id).filter(Classes.number == int(cls_nl[:-1]),
+                                                  Classes.letter == cls_nl[-1]).first()
+        if cls is None:
+            return jsonify({'Класс отсутствует': None})
+        students = session.query(Users).filter(Users.class_id == cls[0], Users.role == 'student').all()
+        cls_dict = dict()
+        teacher = session.query(Users).filter(Users.class_id == cls[0], Users.role == 'teacher').first()
+        if teacher is not None:
+            cls_dict['teachers'] = [{'surname': teacher.surname, 'name': teacher.name, 'otchestvo': teacher.otchestvo}]
+        else:
+            cls_dict['teachers'] = None
+        if students is not None:
+            cls_dict['students'] = list()
+            for std in students:
+                cls_dict['students'].append({'surname': std.surname, 'name': std.name, 'otchestvo': std.otchestvo})
+        else:
+            cls_dict['students'] = None
+        sch = loads(session.query(Classes).filter(Classes.cl_id == cls[0]).first().schedule)
+        cls_dict['schedule'] = {'Понедельник': [x for x in sch['mon']],
+                                'Вторник': [x for x in sch['tue']],
+                                'Среда': [x for x in sch['wed']],
+                                'Четверг': [x for x in sch['thu']],
+                                'Пятница': [x for x in sch['fri']]
+                                }
+
+        return jsonify(cls_dict)
+
+
+api.add_resource(AllInf, '/api/<cls_nl>')
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1', debug=True)
