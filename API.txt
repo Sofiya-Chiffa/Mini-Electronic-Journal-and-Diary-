@@ -1,3 +1,11 @@
 Для получения полной информации о классе необходимо сделать ззапрос в формате:
 "/api/<class_name>"
 Пример: "/api/5А"
+
+Пример программы:
+    import json
+    import requests
+
+    response = requests.get(f'http://127.0.0.1:8080/api/5А')
+    data = response.json()
+    print(data)
