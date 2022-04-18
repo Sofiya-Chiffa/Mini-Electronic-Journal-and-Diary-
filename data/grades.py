@@ -1,14 +1,13 @@
-import sqlalchemy
-from .db_session import ORMBase
-import datetime
+from sqlalchemy import Column, Integer, String, ForeignKey
+from data.db_session import ORMBase
 
 
 class Grade(ORMBase):
     __tablename__ = 'grades'
 
-    g_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True, unique=True)
-    date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    subject = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    grade = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    g_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    date = Column(String, nullable=True)
+    subject = Column(String, nullable=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    grade = Column(Integer, nullable=True)
+    reason = Column(String, nullable=True)

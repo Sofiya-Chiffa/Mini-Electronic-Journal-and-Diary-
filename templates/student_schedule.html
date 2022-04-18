@@ -1,12 +1,11 @@
-{% extends "student_base.html" %}
+{% extends "page_base.html" %}
 
 {% block title %}Расписание{% endblock %}
 
 {% block content %}
-<br><br><br>
+</br></br></br>
 <div class="main">
     <div class="container">
-        <h1 align="center">Расписание</h1>
         <p class="fs-1">
         <div class="container-fluid">
             <div class="row">
@@ -17,11 +16,8 @@
                         <li class="list-group-item">{{days['Понедельник'][1]}}</li>
                         <li class="list-group-item">{{days['Понедельник'][2]}}</li>
                         <li class="list-group-item">{{days['Понедельник'][3]}}</li>
-                        <li class="list-group-item">{% if days['Понедельник'][4] %}<div>{{days['Понедельник'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
-                        </li>
+                        <li class="list-group-item">{{days['Понедельник'][4]}}</li>
                     </ul>
-                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Вторник</h4>
@@ -30,11 +26,8 @@
                         <li class="list-group-item">{{days['Вторник'][1]}}</li>
                         <li class="list-group-item">{{days['Вторник'][2]}}</li>
                         <li class="list-group-item">{{days['Вторник'][3]}}</li>
-                        <li class="list-group-item">{% if days['Вторник'][4] %}<div>{{days['Вторник'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
-                        </li>
+                        <li class="list-group-item">{{days['Вторник'][4]}}</li>
                     </ul>
-                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Среда</h4>
@@ -43,11 +36,8 @@
                         <li class="list-group-item">{{days['Среда'][1]}}</li>
                         <li class="list-group-item">{{days['Среда'][2]}}</li>
                         <li class="list-group-item">{{days['Среда'][3]}}</li>
-                        <li class="list-group-item">{% if days['Среда'][4] %}<div>{{days['Среда'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
-                        </li>
+                        <li class="list-group-item">{{days['Среда'][4]}}</li>
                     </ul>
-                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Четверг</h4>
@@ -56,11 +46,8 @@
                         <li class="list-group-item">{{days['Четверг'][1]}}</li>
                         <li class="list-group-item">{{days['Четверг'][2]}}</li>
                         <li class="list-group-item">{{days['Четверг'][3]}}</li>
-                        <li class="list-group-item">{% if days['Четверг'][4] %}<div>{{days['Четверг'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
-                        </li>
+                        <li class="list-group-item">{{days['Четверг'][4]}}</li>
                     </ul>
-                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Пятница</h4>
@@ -69,23 +56,24 @@
                         <li class="list-group-item">{{days['Пятница'][1]}}</li>
                         <li class="list-group-item">{{days['Пятница'][2]}}</li>
                         <li class="list-group-item">{{days['Пятница'][3]}}</li>
-                        <li class="list-group-item">{% if days['Пятница'][4] %}<div>{{days['Пятница'][4]}}</div>
-                            {% else %}<div>-</div>{% endif %}
-                        </li>
+                        <li class="list-group-item">{{days['Пятница'][4]}}</li>
                     </ul>
-                    <br>
                 </div>
                 <div class="col-xxl-2 col-lg-4 col-sm-6">
                     <h4>Звонки</h4>
                     <ul class="list-group">
-                        {% for time in times %}
-                        <li class="list-group-item">{{ time }}</li>
-                        {% endfor %}
+                        <li class="list-group-item">08:30</li>
+                        <li class="list-group-item">09:25</li>
+                        <li class="list-group-item">10:30</li>
+                        <li class="list-group-item">11:25</li>
+                        <li class="list-group-item">12:30</li>
                     </ul>
-                    <br>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
 {% endblock %}
