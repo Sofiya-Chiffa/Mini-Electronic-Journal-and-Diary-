@@ -119,3 +119,5 @@ pip install flask_restful
 
 ### Запуск проекта
 Выполнить **main.py**
+
+### Ссылка на проект: https://4a97-45-147-80-2.ngrok.io
